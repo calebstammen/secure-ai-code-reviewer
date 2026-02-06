@@ -1,0 +1,15 @@
+include_globs: []
+exclude_globs:
+  - ".git/*"
+  - "**/node_modules/**"
+severity_threshold: "medium"
+enable_external_scanners: false
+enable_llm: false
+llm_mode: "off"
+remote_llm:
+  base_url: ""
+  api_key_env_var: "SAICR_REMOTE_LLM_KEY"
+  model_name: ""
+redaction:
+  enabled: true
+sarif: false

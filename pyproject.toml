@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secure-ai-code-reviewer"
+version = "0.1.0"
+description = "Production-grade CLI + GitHub Action to scan codebases for security risks."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Secure AI Code Reviewer" }
+]
+dependencies = [
+  "typer>=0.12.0",
+  "pydantic>=2.5.0",
+  "pyyaml>=6.0.1",
+  "rich>=13.7.0",
+]
+
+[project.scripts]
+saicr = "secure_ai_code_reviewer.cli:app"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.4.0",
+  "ruff>=0.4.0",
+  "mypy>=1.8.0",
+  "types-PyYAML",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+secure_ai_code_reviewer = ["rules/data/*.yaml"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "UP", "B", "S", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

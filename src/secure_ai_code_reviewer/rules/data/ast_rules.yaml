@@ -1,0 +1,111 @@
+- id: SAICR-PY-001
+  title: SQL injection via string formatting
+  severity: High
+  category: OWASP
+  cwe: ["CWE-89: SQL Injection"]
+  description: "SQL queries built via string formatting can allow injection."
+  recommendation: "Use parameterized queries or ORM parameter binding."
+  references:
+    - "CWE-89: https://cwe.mitre.org/data/definitions/89.html"
+  cyber_flex: "This is a classic CWE-89 footgun that turns string formatting into arbitrary SQL."
+  confidence: 0.7
+  confidence_rationale: "AST detects execute() with formatted string."
+  languages: ["python"]
+
+- id: SAICR-PY-002
+  title: Command injection via shell=True
+  severity: High
+  category: OWASP
+  cwe: ["CWE-78: OS Command Injection"]
+  description: "shell=True executes a command through the shell and can lead to injection."
+  recommendation: "Avoid shell=True. Pass arguments as a list and validate inputs."
+  references:
+    - "CWE-78: https://cwe.mitre.org/data/definitions/78.html"
+  cyber_flex: "Shelling out with user input is an injection playground."
+  confidence: 0.65
+  confidence_rationale: "AST sees subprocess calls with shell=True."
+  languages: ["python"]
+
+- id: SAICR-PY-003
+  title: JWT signature verification disabled
+  severity: High
+  category: Auth
+  cwe: ["CWE-347: Improper Verification of Cryptographic Signature"]
+  description: "Disabling JWT signature checks allows forged tokens."
+  recommendation: "Enforce signature verification and restrict algorithms."
+  references:
+    - "CWE-347: https://cwe.mitre.org/data/definitions/347.html"
+  cyber_flex: "Unsigned JWTs are just base64 claims—attackers can mint their own."
+  confidence: 0.6
+  confidence_rationale: "Heuristic match on jwt.decode options."
+  languages: ["python"]
+
+- id: SAICR-PY-004
+  title: SSRF risk via user-controlled URL
+  severity: Medium
+  category: OWASP
+  cwe: ["CWE-918: Server-Side Request Forgery"]
+  description: "Requests made to user-controlled URLs can access internal resources."
+  recommendation: "Allowlist destinations and validate schemes/hosts."
+  references:
+    - "CWE-918: https://cwe.mitre.org/data/definitions/918.html"
+  cyber_flex: "SSRF can pivot attackers into your internal network."
+  confidence: 0.5
+  confidence_rationale: "Requests called with non-literal URL."
+  languages: ["python"]
+
+- id: SAICR-PY-005
+  title: Insecure session cookie flags
+  severity: Medium
+  category: Auth
+  cwe: ["CWE-614: Sensitive Cookie in HTTPS Session Without Secure Attribute", "CWE-1004: Sensitive Cookie Without HttpOnly Flag"]
+  description: "Cookies without Secure/HttpOnly are exposed to network or script access."
+  recommendation: "Set Secure and HttpOnly flags for session cookies."
+  references:
+    - "CWE-614: https://cwe.mitre.org/data/definitions/614.html"
+  cyber_flex: "Missing cookie flags make session theft far easier."
+  confidence: 0.55
+  confidence_rationale: "AST found set_cookie with flags disabled."
+  languages: ["python"]
+
+- id: SAICR-PY-006
+  title: AES ECB mode usage
+  severity: Medium
+  category: Crypto
+  cwe: ["CWE-327: Use of a Broken or Risky Cryptographic Algorithm"]
+  description: "ECB mode reveals patterns and is not semantically secure."
+  recommendation: "Use AES-GCM or CBC with random IVs."
+  references:
+    - "CWE-327: https://cwe.mitre.org/data/definitions/327.html"
+  cyber_flex: "ECB is the cryptographic equivalent of a glass door."
+  confidence: 0.6
+  confidence_rationale: "AES.new called with MODE_ECB."
+  languages: ["python"]
+
+- id: SAICR-PY-007
+  title: Insecure random used for security tokens
+  severity: Medium
+  category: Crypto
+  cwe: ["CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator"]
+  description: "random module is not suitable for secrets or tokens."
+  recommendation: "Use secrets.token_urlsafe or os.urandom for tokens."
+  references:
+    - "CWE-338: https://cwe.mitre.org/data/definitions/338.html"
+  cyber_flex: "Predictable randomness means predictable tokens."
+  confidence: 0.45
+  confidence_rationale: "AST sees random.* usage."
+  languages: ["python"]
+
+- id: SAICR-AI-001
+  title: Untrusted input in system prompt or tool definition
+  severity: High
+  category: AI-PromptInjection
+  cwe: ["CWE-74: Improper Neutralization of Special Elements", "CWE-20: Improper Input Validation"]
+  description: "Untrusted input appears in privileged instructions or tool definitions."
+  recommendation: "Delimit untrusted input and treat it strictly as data."
+  references:
+    - "OWASP LLM Top 10: https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+  cyber_flex: "System prompts are your root of trust—keep user data out."
+  confidence: 0.6
+  confidence_rationale: "Heuristic detection in prompt assembly."
+  languages: ["python", "javascript", "typescript"]

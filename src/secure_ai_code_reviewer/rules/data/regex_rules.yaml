@@ -1,0 +1,44 @@
+- id: SAICR-REG-001
+  title: Hardcoded credentials detected
+  severity: High
+  category: Auth
+  cwe: ["CWE-798: Use of Hard-coded Credentials"]
+  description: "Hardcoded secrets can be extracted from source code and reused by attackers."
+  recommendation: "Move secrets to a secure secret manager or environment variables and rotate exposed credentials."
+  references:
+    - "CWE-798: https://cwe.mitre.org/data/definitions/798.html"
+  cyber_flex: "Hardcoded creds are a fast lane to account takeover."
+  confidence: 0.62
+  confidence_rationale: "Regex match on credential-like assignments."
+  languages: null
+  pattern: "(?i)(password|passwd|secret|api_key|token)\s*[=:]\s*['\"][^'\"]{8,}['\"]"
+
+- id: SAICR-REG-002
+  title: Insecure hash usage (MD5/SHA1)
+  severity: Medium
+  category: Crypto
+  cwe: ["CWE-327: Use of a Broken or Risky Cryptographic Algorithm"]
+  description: "MD5 and SHA1 are considered weak for security-sensitive hashing."
+  recommendation: "Use SHA-256 or stronger algorithms; for passwords use bcrypt/argon2."
+  references:
+    - "CWE-327: https://cwe.mitre.org/data/definitions/327.html"
+  cyber_flex: "MD5/SHA1 are legacy hashes that crumble under modern attacks."
+  confidence: 0.55
+  confidence_rationale: "Simple hash API name match."
+  languages: null
+  pattern: "\b(md5|sha1)\b"
+
+- id: SAICR-REG-003
+  title: Potential prompt injection via system message
+  severity: High
+  category: AI-PromptInjection
+  cwe: ["CWE-74: Improper Neutralization of Special Elements"]
+  description: "Untrusted input appears to be inserted into system-level instructions."
+  recommendation: "Treat untrusted input as data. Delimit, quote, and segregate it from system prompts."
+  references:
+    - "OWASP LLM Top 10: https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+  cyber_flex: "System prompts are your control plane—never let users write them."
+  confidence: 0.58
+  confidence_rationale: "Heuristic detection of user input in system prompts."
+  languages: ["python", "javascript", "typescript"]
+  pattern: "(?i)role\s*[:=]\s*['\"]system['\"].*(user|input|query|prompt)"
